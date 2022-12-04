@@ -1,16 +1,30 @@
-use std::{fs::File, io::Read};
+use std::{fs::File, io::Read, vec};
 
 fn main() {
     let input = read_string_from_file("day01/input.txt");
 
-    let numbers: Vec<i32> = input
-        .lines()
-        .map(|s| s.parse().unwrap())
+    let numbers: Vec<Vec<i32>> = input
+        .split("\r\n\r\n")
+        .map(|s| s
+            .lines()
+            .map(|s| s.parse().unwrap())
+            .collect())
         .collect();
 
-    let sum: i32 = numbers.iter().sum();
+    let mut sums = vec![0; numbers.len()];
+    for i in 0..numbers.len() {
+        let sum = numbers[i].iter().sum();
+        sums[i] = sum;
+    }
 
-    println!("sum: {}", sum);
+    println!("calories of top elf: {}", sums.iter().max().unwrap());
+
+    sums.sort_by(|a, b| b.cmp(a));
+
+    let top_three = &sums[..3];
+    let top_three_sum: i32 = top_three.iter().sum();
+
+    println!("calories of top three elves: {}", top_three_sum);    
 }
 
 fn read_string_from_file(filename: &str) -> String {
